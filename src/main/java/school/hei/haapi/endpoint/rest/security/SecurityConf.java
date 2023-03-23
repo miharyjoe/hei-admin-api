@@ -73,6 +73,7 @@ public class SecurityConf extends WebSecurityConfigurerAdapter {
         .and()
         .authorizeRequests()
         .antMatchers("/ping").permitAll()
+        .requestMatchers(new SelfMatcher(GET, "/students/*/courses")).hasAnyRole(STUDENT.getRole(), TEACHER.getRole())
         .antMatchers(OPTIONS, "/**").permitAll()
         .antMatchers("/whoami").authenticated()
         .antMatchers(GET, "/students").hasAnyRole(TEACHER.getRole(), MANAGER.getRole())
@@ -100,8 +101,9 @@ public class SecurityConf extends WebSecurityConfigurerAdapter {
         .antMatchers(GET, "/groups").authenticated()
         .antMatchers(GET, "/groups/*").authenticated()
         .antMatchers(PUT, "/groups/**").hasAnyRole(MANAGER.getRole())
-            .antMatchers(GET, "/courses").authenticated()
-            .antMatchers(GET, "/courses/*").authenticated()
+        .antMatchers(GET, "/courses").authenticated()
+        .antMatchers(GET, "/courses/*").authenticated()
+        .antMatchers(PUT, "/courses").hasAnyRole(MANAGER.getRole())
         .antMatchers("/**").denyAll()
 
         // disable superfluous protections

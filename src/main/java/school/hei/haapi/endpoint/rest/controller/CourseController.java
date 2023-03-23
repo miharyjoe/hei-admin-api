@@ -13,6 +13,11 @@ import school.hei.haapi.service.CourseService;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import school.hei.haapi.endpoint.rest.model.CrupdateCourse;
+
+import static java.util.stream.Collectors.toUnmodifiableList;
 
 @RestController
 @AllArgsConstructor
@@ -22,9 +27,21 @@ public class CourseController {
 
     @GetMapping("/courses")
     public List<Course> getAllCourse (
-            @RequestParam PageFromOne page, @RequestParam("page_size") BoundedPageSize pageSize) {
+            @RequestParam(required = false, defaultValue="1") PageFromOne page,
+            @RequestParam(required = false,name = "page_size",defaultValue = "15") BoundedPageSize pageSize
+            ) {
         return courseService.getAll(page, pageSize)
                 .stream().map(courseMapper::toRestCourse)
                 .collect(Collectors.toUnmodifiableList());
     }
+
+  @PutMapping(value = "/courses")
+  public List<Course> createOrUpdateCourses(@RequestBody List<CrupdateCourse> toWrite) {
+    var saved = courseService.saveAll(toWrite.stream()
+        .map(courseMapper::toDomain)
+        .collect(toUnmodifiableList()));
+    return saved.stream()
+        .map(courseMapper::toRest)
+        .collect(toUnmodifiableList());
+  }
 }
