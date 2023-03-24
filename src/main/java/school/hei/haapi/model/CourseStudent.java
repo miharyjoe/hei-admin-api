@@ -34,17 +34,17 @@ public class CourseStudent {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private String id;
-
+    
     @ManyToOne
     @JoinColumn(name = "course_id")
     private Course course;
-
+    
     @ManyToOne
     @JoinColumn(name = "student_id")
     private User student;
-
-   @Type(type = "pgsql_enum")
-   @Enumerated(EnumType.STRING)
-   private school.hei.haapi.model.CourseStatus status;
+    
+    @Type(type = "pgsql_enum")
+    @Enumerated(EnumType.STRING)
+    private school.hei.haapi.endpoint.rest.model.CourseStatus status;
 
 }

@@ -5,7 +5,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import school.hei.haapi.model.*;
-//import school.hei.haapi.endpoint.rest.model.CourseStatus;
+import school.hei.haapi.endpoint.rest.model.CourseStatus;
 import school.hei.haapi.repository.CourseRepository;
 import school.hei.haapi.repository.CourseStudentRepository;
 
@@ -24,35 +24,16 @@ public class CourseService {
         return repository.findAll(pageable).toList();
     }
 
-    public List<Course> saveAll(List<Course> courses) {
-        return repository.saveAll(courses);
-    }
+  public List<Course> saveAll(List<Course> courses) {
+    return repository.saveAll(courses);
+  }
     public List<Course> findCoursesByStudent(String studentId) {
         User student = userService.getById(studentId);
         return courseStudentRepository.findAllByStudent(student).stream()
                 .map(CourseStudent::getCourse)
                 .collect(Collectors.toList());
     }
-    public List<Course> getCoursesOrderByCodeAsc() {
-        return repository.findAllByOrderByCodeAscIdAsc();
-    }
-    public List<Course> getCoursesOrderByCodeDesc() {
-        return repository.findAllByOrderByCodeDescIdDesc();
-    }
-    public List<Course> getCoursesOrderByCreditsAsc() {
-        return repository.findAllByOrderByCreditsAscIdAsc();
-    }
-    public List<Course> getCoursesOrderByCreditsDesc() {
-        return repository.findAllByOrderByCreditsDescIdDesc();
-    }
-        public List<Course> getCoursesByTeacherFirstName(String firstName) {
-        return repository.findByMainTeacherFirstNameContainingIgnoreCase(firstName);
-    }
-    public List<Course> getCoursesByTeacherLastName(String lastName){
-        return repository.findByMainTeacherLastNameContainingIgnoreCase(lastName);
-    }
-
-  /**  public void updateCourseStudentStatus(String studentId, String courseId, CourseStatus newStatus) {
+    public void updateCourseStudentStatus(String studentId, String courseId, CourseStatus newStatus) {
         User student = userService.getById(studentId);
         Course course = repository.findById(courseId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid course id: " + courseId));
@@ -60,7 +41,7 @@ public class CourseService {
                 .orElseThrow(() -> new IllegalArgumentException("No course student found for student " + studentId + " and course " + courseId));
         courseStudent.setStatus(newStatus);
         courseStudentRepository.save(courseStudent);
-    }*/
+    }
 
 
 

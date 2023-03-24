@@ -10,9 +10,9 @@ import java.util.List;
 public interface CourseRepository extends JpaRepository<Course, String> {
     List<Course> findAllByOrderByCodeAscIdAsc();
     List<Course> findAllByOrderByCodeDescIdDesc();
+
     List<Course> findAllByOrderByCreditsAscIdAsc();
     List<Course> findAllByOrderByCreditsDescIdDesc();
-    List<Course> findByMainTeacherFirstNameContainingIgnoreCase(String firstName);
-    List<Course> findByMainTeacherLastNameContainingIgnoreCase(String lastName);
-
+    List<Course> findAllByMainTeacherFirsNameContainingIgnoreCase(String firstname);
+    List<Course> findAllByMainTeacherLastNameContainingIgnoreCase(String lastname);
 }
