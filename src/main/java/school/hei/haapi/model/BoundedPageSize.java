@@ -16,4 +16,8 @@ public class BoundedPageSize {
     }
     this.value = value;
   }
+
+    public int toInt() {
+    return value;
+    }
 }

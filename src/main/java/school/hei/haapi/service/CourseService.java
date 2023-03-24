@@ -13,6 +13,8 @@ import school.hei.haapi.repository.CourseStudentRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static jdk.vm.ci.meta.JavaKind.Int;
+
 @Service
 @AllArgsConstructor
 public class CourseService {
@@ -43,27 +45,17 @@ public class CourseService {
         courseStudent.setStatus(newStatus);
         courseStudentRepository.save(courseStudent);
     }
+    public List<Course> getAll(PageFromOne page, BoundedPageSize pageSize, String code, OrderBy creditsOrder, OrderBy codeOrder, String firstName, String lastName) {
+        Pageable pageable = PageRequest.of(page.toInt() - 1, pageSize.toInt(), getSort(codeOrder, creditsOrder));
 
-    public List<Course> getAllCourses(String code, String lastName, String creditsOrder, String codeOrder, String firstName) {
-        Sort sort;
-        if ("ASC".equalsIgnoreCase(creditsOrder)) {
-            sort = Sort.by(Sort.Direction.ASC, "credits", "id");
-        } else {
-            sort = Sort.by(Sort.Direction.DESC, "credits", "id");
-        }
-        if ("ASC".equalsIgnoreCase(codeOrder)) {
-            sort = sort.and(Sort.by(Sort.Direction.ASC, "code", "id"));
-        } else {
-            sort = sort.and(Sort.by(Sort.Direction.DESC, "code", "id"));
-        }
         if (code != null && lastName != null && firstName == null) {
-            return repository.findAllByCodeContainingIgnoreCaseOrMainTeacherLastNameContainingIgnoreCase(code, lastName, sort);
+            return repository.findAllByCodeContainingIgnoreCaseOrMainTeacherLastNameContainingIgnoreCase(code, lastName, pageable).getContent();
         } else if (code != null && lastName == null && firstName == null) {
-            return repository.findAllByCodeContainingIgnoreCase(code, sort);
+            return repository.findAllByCodeContainingIgnoreCase(code, pageable).getContent();
         } else if (code == null && lastName == null && firstName != null) {
-            return repository.findAllByMainTeacherFirstNameContainingIgnoreCase(firstName, sort);
+            return repository.findAllByMainTeacherFirstNameContainingIgnoreCase(firstName, pageable).getContent();
         } else if (code == null && lastName != null && firstName == null) {
-            return repository.findAllByMainTeacherLastNameContainingIgnoreCase(lastName, sort);
+            return repository.findAllByMainTeacherLastNameContainingIgnoreCase(lastName, pageable).getContent();
         } else {
             if (code == null) {
                 code = "";
@@ -71,7 +63,18 @@ public class CourseService {
             if (lastName == null) {
                 lastName = "";
             }
-            return repository.findAllByCodeContainingIgnoreCaseAndMainTeacherLastNameContainingIgnoreCase(code, lastName, sort);
+            return repository.findAllByCodeContainingIgnoreCaseAndMainTeacherLastNameContainingIgnoreCase(code, lastName, pageable).getContent();
         }
     }
+
+    public enum OrderBy {
+        ASC,
+        DESC
+    }
+    private Sort getSort(OrderBy codeOrder, OrderBy creditsOrder) {
+        Sort.Order codeSort = new Sort.Order(codeOrder == OrderBy.ASC ? Sort.Direction.ASC : Sort.Direction.DESC, "code");
+        Sort.Order creditsSort = new Sort.Order(creditsOrder == OrderBy.ASC ? Sort.Direction.ASC : Sort.Direction.DESC, "credits");
+        return Sort.by(codeSort, creditsSort);
+    }
+
 }
