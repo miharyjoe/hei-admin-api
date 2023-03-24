@@ -14,7 +14,4 @@ public class PageFromOne {
     }
     this.value = value;
   }
-  public int toInt() {
-    return value;
-  }
 }

@@ -46,7 +46,7 @@ public class CourseService {
         courseStudentRepository.save(courseStudent);
     }
     public List<Course> getAll(PageFromOne page, BoundedPageSize pageSize, String code, OrderBy creditsOrder, OrderBy codeOrder, String firstName, String lastName) {
-        Pageable pageable = PageRequest.of(page.toInt() - 1, pageSize.toInt(), getSort(codeOrder, creditsOrder));
+        Pageable pageable = PageRequest.of(page.getValue(), pageSize.getValue(), getSort(codeOrder, creditsOrder));
 
         if (code != null && lastName != null && firstName == null) {
             return repository.findAllByCodeContainingIgnoreCaseOrMainTeacherLastNameContainingIgnoreCase(code, lastName, pageable).getContent();
