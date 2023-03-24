@@ -3,7 +3,9 @@ package school.hei.haapi.service;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+
 import org.springframework.data.domain.Sort;
+
 import org.springframework.stereotype.Service;
 import school.hei.haapi.model.*;
 import school.hei.haapi.endpoint.rest.model.CourseStatus;
@@ -12,7 +14,6 @@ import school.hei.haapi.repository.CourseStudentRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
 
 @Service
 @AllArgsConstructor
@@ -44,6 +45,7 @@ public class CourseService {
         courseStudent.setStatus(newStatus);
         courseStudentRepository.save(courseStudent);
     }
+
     public List<Course> getAll(PageFromOne page, BoundedPageSize pageSize, String code, OrderBy creditsOrder, OrderBy codeOrder, String firstName, String lastName) {
         Pageable pageable = PageRequest.of(page.getValue()-1, pageSize.getValue(), getSort(codeOrder, creditsOrder));
 
@@ -75,5 +77,6 @@ public class CourseService {
         Sort.Order creditsSort = new Sort.Order(creditsOrder == OrderBy.DESC ? Sort.Direction.DESC : Sort.Direction.ASC, "credits");
         return Sort.by(codeSort, creditsSort);
     }
+
 
 }
