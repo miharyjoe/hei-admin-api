@@ -3,6 +3,9 @@ package school.hei.haapi.service;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+
+import org.springframework.data.domain.Sort;
+
 import org.springframework.stereotype.Service;
 import school.hei.haapi.model.*;
 import school.hei.haapi.endpoint.rest.model.CourseStatus;
@@ -43,6 +46,37 @@ public class CourseService {
         courseStudentRepository.save(courseStudent);
     }
 
+    public List<Course> getAll(PageFromOne page, BoundedPageSize pageSize, String code, OrderBy creditsOrder, OrderBy codeOrder, String firstName, String lastName) {
+        Pageable pageable = PageRequest.of(page.getValue()-1, pageSize.getValue(), getSort(codeOrder, creditsOrder));
+
+        if (code != null && lastName != null && firstName == null) {
+            return repository.findAllByCodeContainingIgnoreCaseOrMainTeacherLastNameContainingIgnoreCase(code, lastName, pageable).getContent();
+        } else if (code != null && lastName == null && firstName == null) {
+            return repository.findAllByCodeContainingIgnoreCase(code, pageable).getContent();
+        } else if (code == null && lastName == null && firstName != null) {
+            return repository.findAllByMainTeacherFirstNameContainingIgnoreCase(firstName, pageable).getContent();
+        } else if (code == null && lastName != null && firstName == null) {
+            return repository.findAllByMainTeacherLastNameContainingIgnoreCase(lastName, pageable).getContent();
+        } else {
+            if (code == null) {
+                code = "";
+            }
+            if (lastName == null) {
+                lastName = "";
+            }
+            return repository.findAllByCodeContainingIgnoreCaseAndMainTeacherLastNameContainingIgnoreCase(code, lastName, pageable).getContent();
+        }
+    }
+
+    public enum OrderBy {
+        ASC,
+        DESC
+    }
+    private Sort getSort(OrderBy codeOrder, OrderBy creditsOrder) {
+        Sort.Order codeSort = new Sort.Order(codeOrder == OrderBy.ASC ? Sort.Direction.ASC : Sort.Direction.DESC, "code");
+        Sort.Order creditsSort = new Sort.Order(creditsOrder == OrderBy.DESC ? Sort.Direction.DESC : Sort.Direction.ASC, "credits");
+        return Sort.by(codeSort, creditsSort);
+    }
 
 
 }

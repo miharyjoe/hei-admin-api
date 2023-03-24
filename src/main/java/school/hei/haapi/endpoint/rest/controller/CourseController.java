@@ -13,6 +13,7 @@ import school.hei.haapi.model.BoundedPageSize;
 import school.hei.haapi.model.PageFromOne;
 import school.hei.haapi.service.CourseService;
 
+
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -31,24 +32,25 @@ public class CourseController {
     public List<Course> getAllCourse (
             @RequestParam(required = false, defaultValue="1") PageFromOne page,
             @RequestParam(required = false,name = "page_size",defaultValue = "15") BoundedPageSize pageSize,
-            @RequestParam(required = false, name = "code_order") CodeOrder codeOrder,
-            @RequestParam(required = false,name = "name") String name,
-            @RequestParam(required = false, name = "credits_order") CreditsOrder creditsOrder,
+            @RequestParam(required = false,name = "code") String code,
+            @RequestParam(required = false, name = "credits_order") CourseService.OrderBy creditsOrder,
+            @RequestParam(required = false, name = "code_order") CourseService.OrderBy codeOrder,
             @RequestParam(required = false, name = "teacher_first_name") String teacherFirstName,
             @RequestParam(required = false, name = "teacher_last_name") String teacherLastName
-            ) {
-        return courseService.getAll(page, pageSize, codeOrder, name,creditsOrder,teacherFirstName,teacherLastName)
+    ) {
+        return courseService.getAll(page, pageSize, code, creditsOrder, codeOrder,teacherFirstName,teacherLastName)
                 .stream().map(courseMapper::toRestCourse)
                 .collect(Collectors.toUnmodifiableList());
     }
 
-  @PutMapping(value = "/courses")
-  public List<Course> createOrUpdateCourses(@RequestBody List<CrupdateCourse> toWrite) {
-    var saved = courseService.saveAll(toWrite.stream()
-        .map(courseMapper::toDomain)
-        .collect(toUnmodifiableList()));
-    return saved.stream()
-        .map(courseMapper::toRest)
-        .collect(toUnmodifiableList());
-  }
+    @PutMapping(value = "/courses")
+    public List<Course> createOrUpdateCourses(@RequestBody List<CrupdateCourse> toWrite) {
+        var saved = courseService.saveAll(toWrite.stream()
+                .map(courseMapper::toDomain)
+                .collect(toUnmodifiableList()));
+        return saved.stream()
+                .map(courseMapper::toRest)
+                .collect(toUnmodifiableList());
+    }
+
 }
