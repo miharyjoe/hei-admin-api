@@ -43,7 +43,7 @@ public class CourseService {
         return repository.findAllByOrderByCreditsAscIdAsc();
     }
     public List<Course> getCoursesOrderByCreditsDesc() {
-        return repository.findAllByOrderByCreditsDescIdDDesc();
+        return repository.findAllByOrderByCreditsDescIdDesc();
     }
         public List<Course> getCoursesByTeacherFirstName(String firstName) {
         return repository.findByMainTeacherFirstNameContainingIgnoreCase(firstName);

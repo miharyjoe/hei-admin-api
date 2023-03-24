@@ -11,7 +11,7 @@ public interface CourseRepository extends JpaRepository<Course, String> {
     List<Course> findAllByOrderByCodeAscIdAsc();
     List<Course> findAllByOrderByCodeDescIdDesc();
     List<Course> findAllByOrderByCreditsAscIdAsc();
-    List<Course> findAllByOrderByCreditsDescIdDDesc();
+    List<Course> findAllByOrderByCreditsDescIdDesc();
     List<Course> findByMainTeacherFirstNameContainingIgnoreCase(String firstName);
     List<Course> findByMainTeacherLastNameContainingIgnoreCase(String lastName);
 
