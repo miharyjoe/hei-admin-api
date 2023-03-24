@@ -13,7 +13,6 @@ import school.hei.haapi.repository.CourseStudentRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static jdk.vm.ci.meta.JavaKind.Int;
 
 @Service
 @AllArgsConstructor
@@ -46,7 +45,7 @@ public class CourseService {
         courseStudentRepository.save(courseStudent);
     }
     public List<Course> getAll(PageFromOne page, BoundedPageSize pageSize, String code, OrderBy creditsOrder, OrderBy codeOrder, String firstName, String lastName) {
-        Pageable pageable = PageRequest.of(page.getValue(), pageSize.getValue(), getSort(codeOrder, creditsOrder));
+        Pageable pageable = PageRequest.of(page.getValue()-1, pageSize.getValue(), getSort(codeOrder, creditsOrder));
 
         if (code != null && lastName != null && firstName == null) {
             return repository.findAllByCodeContainingIgnoreCaseOrMainTeacherLastNameContainingIgnoreCase(code, lastName, pageable).getContent();
@@ -73,7 +72,7 @@ public class CourseService {
     }
     private Sort getSort(OrderBy codeOrder, OrderBy creditsOrder) {
         Sort.Order codeSort = new Sort.Order(codeOrder == OrderBy.ASC ? Sort.Direction.ASC : Sort.Direction.DESC, "code");
-        Sort.Order creditsSort = new Sort.Order(creditsOrder == OrderBy.ASC ? Sort.Direction.ASC : Sort.Direction.DESC, "credits");
+        Sort.Order creditsSort = new Sort.Order(creditsOrder == OrderBy.DESC ? Sort.Direction.DESC : Sort.Direction.ASC, "credits");
         return Sort.by(codeSort, creditsSort);
     }
 
