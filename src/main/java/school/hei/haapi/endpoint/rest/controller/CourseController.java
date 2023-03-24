@@ -38,6 +38,8 @@ public class CourseController {
             @RequestParam(required = false, name = "teacher_first_name") String teacherFirstName,
             @RequestParam(required = false, name = "teacher_last_name") String teacherLastName
     ) {
+        PageFromOne pageFromOne = new PageFromOne(Integer.parseInt(page.toString()));
+        BoundedPageSize boundedPageSize = new BoundedPageSize(Integer.parseInt(pageSize.toString()));
         return courseService.getAll(page, pageSize, code, creditsOrder, codeOrder,teacherFirstName,teacherLastName)
                 .stream().map(courseMapper::toRestCourse)
                 .collect(Collectors.toUnmodifiableList());
